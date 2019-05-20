@@ -6,5 +6,6 @@ namespace DemoFunction.Services
 {
     public interface IMessageService
     {
+        string GetMessage();
     }
 }

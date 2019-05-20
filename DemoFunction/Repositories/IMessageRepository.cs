@@ -6,5 +6,6 @@ namespace DemoFunction.Repositories
 {
     public interface IMessageRepository
     {
+        string GetMessage();
     }
 }
