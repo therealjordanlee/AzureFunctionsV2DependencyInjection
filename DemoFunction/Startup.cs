@@ -1,7 +1,10 @@
-﻿using Microsoft.Azure.Functions.Extensions.DependencyInjection;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Extensions.Configuration;
+﻿using DemoFunction.Configurations;
+using DemoFunction.Repositories;
+using DemoFunction.Services;
+using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Serilog;
 using System;
 
 [assembly: FunctionsStartup(typeof(DemoFunction.Startup))]
@@ -10,24 +13,50 @@ namespace DemoFunction
 {
     public class Startup : FunctionsStartup
     {
+        public Startup()
+        {
+            // Initialize serilog logger
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.Console()
+                .WriteTo.Trace()
+                .MinimumLevel.Debug()
+                .CreateLogger();
+
+        }
+
         public override void Configure(IFunctionsHostBuilder builder)
         {
-            // Configurations
-            // https://blog.jongallant.com/2018/01/azure-function-config/
-            // https://www.koskila.net/how-to-access-azure-function-apps-settings-from-c/
-            // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?view=aspnetcore-2.2
-
+            /* It looks like configuration builder is already done out of the box, so the code
+            ** below is no longer required in order to read from local.settings.json, environment, etc
+            */
             //var config = new ConfigurationBuilder()
             //    .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
             //    .AddEnvironmentVariables()
             //    .Build();
 
-            var helloMessage = Environment.GetEnvironmentVariable("HelloMessage");
+            // Depedency Injecting loggers in Azure Functions V2
+            // https://github.com/Azure/azure-functions-host/issues/4425
+            // https://stackoverflow.com/questions/55916750/serilog-in-azure-functions
+            // https://blog.bitscry.com/2019/04/05/dependency-injection-in-azure-functions/
+            // https://asp.net-hacker.rocks/2017/05/05/add-custom-logging-in-aspnetcore.html
 
-            Console.WriteLine("in startup");
+            var messageConfiguration = new MessageConfiguration
+            {
+                HelloMessage = Environment.GetEnvironmentVariable("HelloMessage"),
+                GoodbyeMessage = Environment.GetEnvironmentVariable("GoodbyeMessage")
+            };
 
-            //builder.Services
-            //    .Configure
+            builder.Services.AddScoped<IMessageRepository>(m => {
+                 return new MessageRepository(messageConfiguration);
+            });
+            builder.Services.AddScoped<IMessageService, MessageService>();
+
+
+            builder.Services.AddLogging(loggingBuilder =>
+            {
+                loggingBuilder.AddSerilog();
+            });
+
         }
     }
 }

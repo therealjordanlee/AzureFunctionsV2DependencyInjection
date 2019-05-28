@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace DemoFunction.Repositories
+﻿namespace DemoFunction.Repositories
 {
     public interface IMessageRepository
     {
-        string GetMessage();
+        string GetGoodbyeMessage();
+        string GetHelloMessage();
     }
 }

@@ -1,22 +1,29 @@
 ﻿using DemoFunction.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Microsoft.Extensions.Logging;
 
 namespace DemoFunction.Services
 {
     public class MessageService : IMessageService
     {
         private readonly IMessageRepository _messageRespository;
+        private ILogger _logger;
 
-        public MessageService(IMessageRepository messageRepository)
+        public MessageService(IMessageRepository messageRepository, ILogger<MessageService> logger)
         {
             _messageRespository = messageRepository;
+            _logger = logger;
         }
 
-        public string GetMessage()
+        public string GetHelloMessage()
         {
-            var response = _messageRespository.GetMessage();
+            _logger.LogInformation("blah");
+            var response = _messageRespository.GetHelloMessage();
+            return response;
+        }
+
+        public string GetGoodbyeMessage()
+        {
+            var response = _messageRespository.GetGoodbyeMessage();
             return response;
         }
     }

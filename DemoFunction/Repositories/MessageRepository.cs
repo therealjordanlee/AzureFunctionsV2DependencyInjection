@@ -1,21 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using DemoFunction.Configurations;
 
 namespace DemoFunction.Repositories
 {
     public class MessageRepository : IMessageRepository
     {
-        private readonly string _message;
+        private readonly MessageConfiguration _messageConfiguration;
 
-        public MessageRepository(string message)
+        public MessageRepository(MessageConfiguration messageConfiguration)
         {
-            _message = message;
+            _messageConfiguration = messageConfiguration;
         }
 
-        public string GetMessage()
+        public string GetHelloMessage()
         {
-            return _message;
+            return _messageConfiguration.HelloMessage;
+        }
+
+        public string GetGoodbyeMessage()
+        {
+            return _messageConfiguration.GoodbyeMessage;
         }
     }
 }

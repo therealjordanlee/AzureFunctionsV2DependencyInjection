@@ -1,34 +1,32 @@
-using System;
-using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using Microsoft.Extensions.Configuration;
+using DemoFunction.Services;
 
 namespace FunctionApp1
 {
     public class Function1
     {
+        private readonly IMessageService _messageService;
+        private readonly ILogger _logger;
+
+        public Function1(IMessageService messageService, ILogger<Function1> logger)
+        {
+            _messageService = messageService;
+            _logger = logger;
+        }
+
         [FunctionName("Function1")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "hello")] HttpRequest req,
-            ILogger log,
-            ExecutionContext context)
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "hello")] HttpRequest req)
         {
-            var config = new ConfigurationBuilder()
-            .SetBasePath(context.FunctionAppDirectory)
-            .AddJsonFile("local.settings.json", optional: true, reloadOnChange: false)
-            .AddEnvironmentVariables()
-            .Build();
+            var xxx = _messageService.GetHelloMessage();
+            _logger.LogInformation("C# HTTP trigger function processed a request.");
 
-            log.LogInformation("C# HTTP trigger function processed a request.");
-
-            var response = config["HelloMessage"];
-            return new OkObjectResult(response);
+            return new OkObjectResult("ok");
         }
     }
 }

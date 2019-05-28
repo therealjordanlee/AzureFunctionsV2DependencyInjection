@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace DemoFunction.Configurations
+﻿namespace DemoFunction.Configurations
 {
     public class MessageConfiguration
     {
