@@ -16,7 +16,6 @@ namespace DemoFunction.Services
 
         public string GetHelloMessage()
         {
-            _logger.LogInformation("blah");
             var response = _messageRespository.GetHelloMessage();
             return response;
         }

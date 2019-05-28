@@ -3,7 +3,6 @@ using DemoFunction.Repositories;
 using DemoFunction.Services;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Serilog;
 using System;
 
@@ -21,7 +20,6 @@ namespace DemoFunction
                 .WriteTo.Trace()
                 .MinimumLevel.Debug()
                 .CreateLogger();
-
         }
 
         public override void Configure(IFunctionsHostBuilder builder)
@@ -50,13 +48,10 @@ namespace DemoFunction
                  return new MessageRepository(messageConfiguration);
             });
             builder.Services.AddScoped<IMessageService, MessageService>();
-
-
             builder.Services.AddLogging(loggingBuilder =>
             {
                 loggingBuilder.AddSerilog();
             });
-
         }
     }
 }
